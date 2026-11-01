@@ -38,7 +38,7 @@ for (const [entry, args] of [
       });
       await client.connect(transport);
       assert.equal(client.getServerVersion().name, "mcp-mercy");
-      assert.equal((await client.listTools()).tools.length, 7);
+      assert.equal((await client.listTools()).tools.length, 8);
       const result = await client.callTool({
         name: "auth_status",
         arguments: {},

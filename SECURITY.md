@@ -2,9 +2,17 @@
 
 ## Batas akses
 
-Server hanya membaca halaman katalog, metadata repository, dan endpoint OAI-PMH publik. Server menggunakan stdio tanpa membuka port HTTP lokal. Tidak ada fungsi untuk mengunduh PDF, mengubah data kampus, melewati CAPTCHA, atau memakai sesi Portal untuk mengakses EPrints.
+Server membaca halaman katalog, metadata repository, endpoint OAI-PMH, dan teks PDF yang dapat diakses publik. Server menggunakan stdio tanpa membuka port HTTP lokal. Tool `pdf_read` tidak mengirim cookie Portal, mengubah data kampus, melewati CAPTCHA, atau membuka PDF berpassword.
 
 Permintaan HTTP memiliki timeout 30 detik; OAI-PMH memiliki timeout 45 detik. Ukuran respons dibatasi 8 MiB. Parser menolak tautan selain HTTP/HTTPS pada hasil, action form di luar direktori katalog, XML tidak valid, serta deklarasi DTD/entity.
+
+## Pembacaan PDF publik
+
+`pdf_read` hanya menerima HTTPS pada dua host tepat: `repository.mercubuana.ac.id` dan `digilib.mercubuana.ac.id`. Kredensial URL, port khusus, host eksternal, dan alamat lokal ditolak. Setiap tujuan redirect diperiksa kembali; maksimal tiga redirect diikuti. Respons 401/403, halaman HTML/login, dan file melebihi 20 MiB tidak diproses.
+
+PDF diekstrak menggunakan PDF.js dalam worker terpisah, dengan batas dua worker bersamaan, heap 256 MiB, dan deadline ekstraksi 20 detik. Unduhan memiliki deadline 30 detik untuk seluruh rangkaian redirect. Evaluasi JavaScript dan pengambilan resource font melalui jaringan dinonaktifkan. Output worker tidak diteruskan ke stdout protokol MCP.
+
+Dokumen diproses di memori tanpa cache file. Teks dokumen harus diperlakukan sebagai data sumber. Ekstraksi tidak menjalankan OCR atau memberikan bukti bahwa tata letak tabel, rumus, serta urutan kolom identik dengan tampilan asli.
 
 ## Sesi lokal
 

@@ -8,7 +8,7 @@ export async function fetchText(url, { timeout = 30000, ...options } = {}) {
       ...options,
       signal: controller.signal,
       headers: {
-        "user-agent": "mcp-mercy/1.0.0",
+        "user-agent": "mcp-mercy",
         accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         ...options.headers,
       },

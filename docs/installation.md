@@ -4,7 +4,9 @@ Repositori resmi proyek: [kiryuken/mcp-mercy](https://github.com/kiryuken/mcp-me
 
 ## Status distribusi
 
-Paket [`mcp-mercy` versi `1.0.0`](https://www.npmjs.com/package/mcp-mercy) tersedia di registry npm dengan tag `latest`. Instalasi GitHub/curl memakai branch `main` repositori publik; checkout lokal juga dapat dipakai untuk pengembangan.
+Paket [`mcp-mercy`](https://www.npmjs.com/package/mcp-mercy) didistribusikan melalui registry npm. Instalasi GitHub/curl memakai branch `main` repositori publik; checkout lokal juga dapat dipakai untuk pengembangan.
+
+Fitur `pdf_read` memerlukan versi `1.1.0` atau lebih baru. Periksa versi registry dengan `npm view mcp-mercy version`. Jika perubahan yang dibutuhkan belum dirilis, instal dari checkout source terbaru.
 
 ## Persyaratan
 
@@ -12,6 +14,8 @@ Paket [`mcp-mercy` versi `1.0.0`](https://www.npmjs.com/package/mcp-mercy) terse
 - Harness yang sudah terpasang: OpenCode, Claude Code, atau Codex.
 - Akses HTTPS ke GitHub/npm saat instalasi dan ke layanan kampus saat pencarian.
 - Chrome, Chromium, atau Edge dan desktop grafis untuk login yang menyimpan sesi. Pencarian publik dapat digunakan tanpa login.
+
+Pasang satu harness saja; tautan instalasi resminya tersedia di [README](../README.md#memasang-harness). Library MCP, parser, dan pembaca PDF dipasang otomatis oleh npm. Browser hanya diperlukan untuk login Portal; ekstraksi PDF publik tidak memerlukan browser. curl dibutuhkan untuk metode curl dan Git dibutuhkan untuk clone source; keduanya opsional pada metode npm langsung.
 
 Periksa runtime dari terminal yang akan dipakai harness:
 

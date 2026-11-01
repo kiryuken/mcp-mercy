@@ -20,6 +20,15 @@ export const repositorySearchSchema = z.object({
   limit: z.number().int().min(1).max(50).default(20),
 });
 export const repositoryItemSchema = z.object({ eprintId: id });
+export const pdfReadSchema = z
+  .object({
+    url: z.url().max(4096),
+    page: z.number().int().min(1).max(100000).default(1),
+    pageOffset: z.number().int().min(0).default(0),
+    maxPages: z.number().int().min(1).max(20).default(5),
+    maxChars: z.number().int().min(1).max(80000).default(20000),
+  })
+  .strict();
 export const oaiSchema = z
   .object({
     verb: z.enum([

@@ -116,7 +116,7 @@ export function parseRepositoryItem(html) {
     divisions: metas("divisions"),
     institution: meta("institution"),
     files,
-    note: "Status file berasal dari label halaman. Nilai null berarti belum diverifikasi; MCP tidak mengunduh atau menguji akses PDF.",
+    note: "Status file berasal dari label halaman. Nilai null berarti belum diverifikasi. Gunakan pdf_read pada URL file untuk membaca PDF yang dapat diakses publik.",
   };
 }
 

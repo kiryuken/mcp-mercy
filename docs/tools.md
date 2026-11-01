@@ -55,7 +55,42 @@ Hasil menyertakan `total` dari halaman sumber, `count` yang ditampilkan, `parsed
 
 Mengembalikan metadata EPrints: judul, abstrak, penulis, tanggal, jenis, divisi, institusi, `fullTextStatus`, dan `files`. Tautan duplikat digabung. Pembatasan dinilai per baris dokumen, sehingga bab restricted tidak mengubah status cover.
 
-`files[].restricted` bernilai `true` ketika label pembatasan ditemukan atau `null` ketika akses belum diverifikasi. Tidak ada permintaan HEAD/GET ke PDF untuk menguji keterbukaan file.
+`files[].restricted` bernilai `true` ketika label pembatasan ditemukan atau `null` ketika akses belum diverifikasi. `repository_item` tidak mengirim permintaan HEAD/GET ke PDF; gunakan `pdf_read` untuk mengambil teks dokumen publik melalui permintaan terpisah.
+
+## `pdf_read`
+
+| Parameter    | Tipe    | Default | Ketentuan                                                                                             |
+| ------------ | ------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| `url`        | string  | Wajib   | URL HTTPS pada `repository.mercubuana.ac.id` atau `digilib.mercubuana.ac.id`; maksimal 4.096 karakter |
+| `page`       | integer | `1`     | Halaman fisik mulai dari 1; maksimal 100.000 dan harus tersedia pada PDF                              |
+| `pageOffset` | integer | `0`     | Posisi awal pada teks halaman; gunakan nilai dari `next`                                              |
+| `maxPages`   | integer | `5`     | `1` sampai `20` halaman per respons                                                                   |
+| `maxChars`   | integer | `20000` | `1` sampai `80000` karakter teks per respons                                                          |
+
+Gunakan URL file dari `repository_item` atau tautan katalog yang dapat diakses publik. File maksimal 20 MiB diproses di memori melalui PDF.js. Redirect hanya diikuti bila tujuannya tetap memenuhi batas host dan HTTPS. Tool tidak mengirim cookie, mengeksekusi JavaScript PDF, menerima password, atau mengakses path lokal.
+
+Hasil menyediakan `source`, URL final `url`, `bytes`, `sha256`, `pageCount`, `returnedPages`, `chars`, `pages`, `next`, dan `truncated`. Setiap halaman berisi:
+
+| Field           | Makna                                        |
+| --------------- | -------------------------------------------- |
+| `number`        | Nomor halaman fisik PDF, mulai dari 1        |
+| `offset`        | Posisi awal potongan pada teks halaman       |
+| `text`          | Teks yang tersedia pada respons ini          |
+| `textLength`    | Panjang seluruh teks hasil ekstraksi halaman |
+| `hasMoreText`   | Masih ada teks pada halaman yang sama        |
+| `textAvailable` | Halaman memiliki teks yang dapat diekstrak   |
+| `citation`      | URL dokumen dengan anchor `#page=N`          |
+
+Jika `next` tidak `null`, teruskan dengan URL yang sama serta `page` dan `pageOffset` dari objek tersebut. Offset dapat berada di tengah halaman ketika `maxChars` tercapai. `truncated: true` menandakan masih ada teks atau halaman; bukan alasan untuk menyimpulkan bahwa seluruh dokumen sudah dibaca.
+
+```text
+pdf_read(url="https://repository.mercubuana.ac.id/104728/1/Cover.pdf", page=1, maxPages=3)
+pdf_read(url="URL_YANG_SAMA", page=NEXT_PAGE, pageOffset=NEXT_OFFSET)
+```
+
+Nomor halaman bukan nomor cetak bab atau angka Romawi pada halaman. SHA-256 dapat dibandingkan antar pemanggilan untuk memeriksa konsistensi dokumen. Halaman scan, gambar, atau kosong dapat menghasilkan `textAvailable: false`; tool tidak menjalankan OCR. Urutan kolom, tabel, dan rumus dapat memerlukan pemeriksaan pada PDF asli.
+
+HTTP 401/403, URL di luar host yang didukung, respons non-PDF, file rusak/berpassword, page/offset di luar dokumen, serta batas unduhan atau pemrosesan menghasilkan `isError: true`.
 
 ## `repository_oai`
 

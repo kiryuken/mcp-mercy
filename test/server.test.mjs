@@ -7,6 +7,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../src/server.mjs";
 import { fixture, mockFetch } from "./helpers.mjs";
+import { pdfFixture } from "./pdf-fixture.mjs";
 
 async function connect(t) {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
@@ -21,7 +22,7 @@ async function connect(t) {
   return client;
 }
 
-test("MCP initializes with mcp-mercy identity and advertises seven read-only tools", async (t) => {
+test("MCP initializes with mcp-mercy identity and advertises eight read-only tools", async (t) => {
   const client = await connect(t);
   assert.equal(client.getServerVersion().name, "mcp-mercy");
   const { tools } = await client.listTools();
@@ -30,6 +31,7 @@ test("MCP initializes with mcp-mercy identity and advertises seven read-only too
     "catalog_fields",
     "catalog_item",
     "catalog_search",
+    "pdf_read",
     "repository_item",
     "repository_oai",
     "repository_search",
@@ -70,6 +72,16 @@ for (const [name, args, responses, verify] of [
     { eprintId: "123" },
     [fixture("repository-item.html")],
     (data) => assert.equal(data.files[1].restricted, true),
+  ],
+  [
+    "pdf_read",
+    { url: "https://repository.mercubuana.ac.id/123/1/public.pdf", maxPages: 1 },
+    [new Response(pdfFixture(), { headers: { "content-type": "application/pdf" } })],
+    (data) => {
+      assert.equal(data.pageCount, 3);
+      assert.equal(data.pages[0].number, 1);
+      assert.match(data.pages[0].text, /Research methods/);
+    },
   ],
   [
     "repository_oai",
@@ -118,6 +130,7 @@ for (const [name, args] of [
   ["catalog_item", { collection: "buku", id: "../123" }],
   ["repository_search", { query: "  " }],
   ["repository_item", { eprintId: "abc" }],
+  ["pdf_read", { url: "file:///etc/passwd" }],
   ["repository_oai", { verb: "GetRecord" }],
 ]) {
   test(`MCP ${name} rejects invalid input before HTTP`, async (t) => {

@@ -4,6 +4,7 @@ import { authStatus } from "./auth.mjs";
 import { catalogFields, catalogItem, catalogSearch } from "./catalog.mjs";
 import { repositoryItem, repositorySearch } from "./repository.mjs";
 import { repositoryOai } from "./oai.mjs";
+import { readPdf } from "./pdf.mjs";
 import {
   catalogFieldsSchema,
   catalogItemSchema,
@@ -11,6 +12,7 @@ import {
   oaiSchema,
   repositoryItemSchema,
   repositorySearchSchema,
+  pdfReadSchema,
 } from "./schemas.mjs";
 
 const { version } = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
@@ -53,6 +55,12 @@ export function createServer() {
       "Query OAI-PMH UMB. resumptionToken eksklusif; limit memotong output batch lokal.",
       oaiSchema,
       repositoryOai,
+    ],
+    [
+      "pdf_read",
+      "Baca teks PDF publik dari tautan katalog/repository Mercu Buana, dengan nomor halaman dan citation. Gunakan next untuk melanjutkan tanpa melewatkan potongan halaman. Tidak menjalankan OCR atau memakai cookie login.",
+      pdfReadSchema,
+      readPdf,
     ],
     [
       "auth_status",

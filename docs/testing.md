@@ -25,10 +25,11 @@ Kasus utama yang diuji:
 - Seluruh bentuk respons OAI, deleted record, token, error protokol, XML rusak, serta kombinasi argumen yang tidak sah.
 - Status HTTP error, kegagalan jaringan, timeout, respons kosong, dan batas ukuran respons.
 - State yang hilang atau rusak, cookie kedaluwarsa atau domain lain, izin file, serta penyimpanan sesi atomik.
+- Pembacaan PDF sintetis dengan parser nyata, nomor halaman, kelanjutan di tengah halaman, halaman kosong, PDF rusak/berpassword, pembatasan host/redirect, serta batas ukuran, waktu, dan worker.
 
 ## Integrasi MCP
 
-`test/server.test.mjs` menghubungkan SDK client dan server melalui `InMemoryTransport`. Tes memeriksa identitas, daftar tool, input schema, respons teks dan terstruktur, penanganan error, dan pemanggilan ketujuh tool.
+`test/server.test.mjs` menghubungkan SDK client dan server melalui `InMemoryTransport`. Tes memeriksa identitas, daftar tool, input schema, respons teks dan terstruktur, penanganan error, dan pemanggilan kedelapan tool. Integrasi `pdf_read` menggunakan unduhan simulasi dengan bytes PDF sintetis yang benar-benar diekstrak oleh worker PDF.js.
 
 `test/stdio.test.mjs` menjalankan entry point server sebagai subprocess dari working directory lain. Tes melakukan handshake, daftar tool, pemanggilan `auth_status`, dan penutupan klien. Tes juga memeriksa kegagalan login CLI pada terminal noninteraktif.
 
@@ -44,7 +45,7 @@ Jangan menaikkan coverage dengan assertion yang hanya meniru implementasi. Tamba
 
 ## Pengujian live
 
-Tes live menggunakan SDK client melalui transport stdio, tanpa mock HTTP, tanpa kredensial, dan tanpa akses PDF. Pemanggilan dijalankan berurutan agar tidak membanjiri layanan kampus.
+Tes live menggunakan SDK client melalui transport stdio, tanpa mock HTTP dan tanpa kredensial. Satu PDF publik diambil untuk memeriksa ekstraksi serta citation; PDF terbatas tidak diunduh oleh suite live. Pemanggilan dijalankan berurutan agar tidak membanjiri layanan kampus.
 
 ```bash
 npm run test:live

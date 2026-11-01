@@ -24,7 +24,7 @@ test("live upstream contracts through the MCP stdio client", { timeout: 300000 }
     fs.rmSync(dir, { recursive: true, force: true });
   });
   await client.connect(transport);
-  assert.equal((await client.listTools()).tools.length, 7);
+  assert.equal((await client.listTools()).tools.length, 8);
   const call = async (name, args) => {
     const result = await client.callTool({ name, arguments: args }, undefined, { timeout: 90000 });
     assert.notEqual(result.isError, true, `${name}: ${result.content?.[0]?.text}`);
@@ -78,6 +78,16 @@ test("live upstream contracts through the MCP stdio client", { timeout: 300000 }
     assert.ok(Array.isArray(item.authors));
   });
   let recordBatch;
+  await t.test("PDF reader extracts a public repository document with page citations", async () => {
+    const result = await call("pdf_read", {
+      url: "https://repository.mercubuana.ac.id/104728/1/Cover.pdf",
+      maxPages: 2,
+    });
+    assert.ok(result.pageCount > 0);
+    assert.ok(result.pages.some((page) => page.textAvailable));
+    assert.match(result.pages[0].citation, /#page=1$/);
+    assert.match(result.sha256, /^[a-f0-9]{64}$/);
+  });
   for (const verb of [
     "Identify",
     "ListSets",

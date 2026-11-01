@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Ditambahkan
+
+- Tool `pdf_read` untuk membaca PDF publik Mercu Buana dengan teks per halaman, citation, SHA-256, dan kelanjutan teks tanpa melewati sisa halaman.
+- Batas unduhan 20 MiB, validasi setiap redirect, timeout, serta worker ekstraksi dengan batas memori dan konkurensi.
+- Pengujian PDF sintetis, penolakan file rusak/berpassword, kontrak MCP, dan PDF publik pada suite live.
+
+### Diubah
+
+- Versi source disiapkan menjadi `1.1.0`; rilis npm `1.0.0` tetap tersedia sampai pembaruan diterbitkan.
+- Metadata `repository_item` mengarahkan pembacaan file publik ke `pdf_read`.
+
 ### Dokumentasi
 
 - Perbarui status distribusi dan panduan instalasi setelah `mcp-mercy@1.0.0` tersedia di npm.

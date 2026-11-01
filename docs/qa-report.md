@@ -4,32 +4,44 @@ Tanggal: 2 November 2026 (Asia/Bangkok). Lingkungan: Linux, Node.js 22.22.1 dan 
 
 ## Ringkasan
 
-Implementasi telah dipisahkan ke modul dengan tanggung jawab yang jelas dan identitas paket diselaraskan menjadi `mcp-mercy`. Setelah penambahan CLI dan installer, 138 pengujian offline lulus pada kedua versi Node.js di Linux; satu tes khusus Windows dilewati sesuai platform. Pengujian layanan kampus pada audit inti sebelumnya lulus, termasuk seluruh koleksi, keenam verb OAI, dan kelanjutan batch. Audit dependensi terakhir tidak menemukan advisori pada dependency tree yang terpasang.
+Source versi `1.1.0` menambahkan pembacaan PDF publik dengan pagination teks dan citation per halaman. Sebanyak 170 pengujian offline lulus pada Node.js 22 dan 24 di Linux; satu tes khusus Windows dilewati sesuai platform. Pembacaan PDF publik juga lulus melalui paket tarball terpasang dan klien MCP stdio. Suite live awal mengalami timeout pencarian repository; pemeriksaan ulang tiga alur yang terdampak berhasil. Audit dependensi tidak menemukan advisori.
 
 ## Hasil verifikasi
 
-| Pemeriksaan                 | Hasil                                                                      |
-| --------------------------- | -------------------------------------------------------------------------- |
-| Instalasi bersih `npm ci`   | Lulus dari lockfile                                                        |
-| ESLint dan Prettier         | Lulus                                                                      |
-| Tes offline Node.js 22.22.1 | 138 lulus; 0 gagal; 1 tes Windows dilewati pada Linux                      |
-| Tes offline Node.js 24.14.0 | 138 lulus; 0 gagal; 1 tes Windows dilewati pada Linux                      |
-| Tes live Node.js 24.14.0    | 18 subtest dan 1 test induk lulus; 0 gagal; 0 dilewati                     |
-| Coverage baris `src/`       | 100%                                                                       |
-| Coverage branch `src/`      | 93,77%                                                                     |
-| Coverage fungsi `src/`      | 97,26%                                                                     |
-| `npm audit`                 | 0 critical, 0 high, 0 moderate, 0 low                                      |
-| Daftar file distribusi      | Entry point dan modul tersedia; state serta konfigurasi lokal dikecualikan |
+| Pemeriksaan                        | Hasil                                                                      |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| Instalasi bersih `npm ci`          | Lulus dari lockfile                                                        |
+| ESLint dan Prettier                | Lulus                                                                      |
+| Tes offline Node.js 22.22.1        | 170 lulus; 0 gagal; 1 tes Windows dilewati pada Linux                      |
+| Tes offline Node.js 24.14.0        | 170 lulus; 0 gagal; 1 tes Windows dilewati pada Linux                      |
+| Suite live awal                    | 16 lulus; 4 gagal termasuk test induk; pemicu: timeout repository search   |
+| Pemeriksaan ulang alur terdampak   | `repository_search`, `repository_item`, dan OAI `GetRecord` lulus          |
+| PDF publik melalui paket terpasang | Lulus; PDF 18 halaman, 2 halaman dibaca dengan citation                    |
+| Coverage baris `src/`              | 99,92%                                                                     |
+| Coverage branch `src/`             | 94,09%                                                                     |
+| Coverage fungsi `src/`             | 97,78%                                                                     |
+| `npm audit`                        | 0 critical, 0 high, 0 moderate, 0 low                                      |
+| Daftar file distribusi             | Entry point dan modul tersedia; state serta konfigurasi lokal dikecualikan |
 
 Coverage mengukur modul `src/`, termasuk CLI, login, deteksi browser, dan konfigurasi harness. GUI login menggunakan simulasi; keberhasilan login browser dengan akun kampus belum diuji. Konfigurasi CI untuk native macOS dan Windows tersedia, tetapi kedua OS tersebut belum dijalankan di lingkungan Linux ini.
 
 ## Verifikasi instalasi dan harness
 
-Tarball hasil `npm pack` dipasang dengan npm ke prefix sementara di `/tmp`, tanpa mengubah instalasi global pengguna. Binary `mercy` hasil instalasi berhasil menampilkan versi, URL login, dan konfigurasi Codex dengan lokasi paket terpasang. Klien SDK berhasil melakukan handshake stdio, membaca tujuh tool, dan memanggil `auth_status` melalui `mercy serve` dari paket tersebut.
+Tarball `mcp-mercy@1.1.0` hasil `npm pack` dipasang dengan npm ke prefix sementara di `/tmp`, tanpa mengubah instalasi global pengguna. Klien SDK berhasil melakukan handshake stdio, membaca delapan tool, dan memanggil `pdf_read` melalui `mercy serve` dari paket terpasang. PDF publik asli memiliki 18 halaman; dua halaman pertama menghasilkan 748 karakter dengan nomor halaman dan citation. Stdout tetap berupa pesan MCP dan stderr tidak memuat keluaran parser.
 
 Generator konfigurasi mencakup OpenCode 1.x dan V2, Claude Code, serta Codex. Format dibandingkan dengan dokumentasi resmi dan help CLI yang tersedia. Browser kandidat serta pemanggilan pembuka URL Windows/macOS diuji dengan simulasi platform. Installer POSIX diuji dengan npm simulasi untuk memverifikasi quoting path, penolakan argumen tidak valid, dan propagasi kegagalan npm.
 
-Rilis `mcp-mercy@1.0.0` telah diverifikasi tersedia di registry npm dengan tag `latest`. Metadata repository mengarah ke `kiryuken/mcp-mercy`. URL GitHub/curl memakai branch `main`; unduhan installer tersebut belum diuji sebelum push pertama.
+Rilis `mcp-mercy@1.0.0` telah diverifikasi tersedia di registry npm. Source `1.1.0` disiapkan untuk rilis berikutnya dan belum dipublikasikan dalam pekerjaan ini. Metadata repository mengarah ke `kiryuken/mcp-mercy`.
+
+## Verifikasi pembaca PDF
+
+`test/pdf.test.mjs` memakai PDF sintetis dengan beberapa halaman teks dan halaman kosong, serta PDF terkunci sintetis dari pypdf. Ekstraksi memakai worker PDF.js asli. Tes memeriksa rentang halaman, penyambungan potongan teks pada halaman yang sama, citation, SHA-256, PDF rusak/berpassword, respons HTML, HTTP 401/403, URL di luar host yang didukung, redirect, ukuran unduhan, timeout, dan kapasitas worker.
+
+Ekstraksi diberi batas 20 MiB unduhan, 30 detik jaringan, 20 detik pemrosesan, dan dua worker bersamaan. Teks diproses di memori. Worker menerima bytes yang sudah diunduh; cookie Portal dan URL eksternal tidak diteruskan ke parser. PDF.js memakai resource font lokal dan menonaktifkan evaluasi JavaScript serta fetch resource worker.
+
+Suite live pertama memicu timeout 30 detik pada `repository_search`. Dua subtest yang memerlukan ID hasil pencarian dan test induk ikut gagal; tes PDF publik tetap lulus. Pemeriksaan ulang terarah kemudian berhasil untuk pencarian, detail repository, dan OAI `GetRecord`. Hasil awal tetap dicatat; suite live tidak dianggap lulus penuh pada percobaan pertama.
+
+Belum ada OCR atau rekonstruksi tabel/rumus. Nomor halaman mengikuti urutan fisik PDF. Pengujian native macOS/Windows masih bergantung pada CI GitHub.
 
 ## Penilaian internal
 

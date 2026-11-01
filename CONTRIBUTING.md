@@ -14,25 +14,26 @@ npm run check
 
 ## Pembagian modul
 
-| Lokasi                                      | Tanggung jawab                                            |
-| ------------------------------------------- | --------------------------------------------------------- |
-| `bin/mcp-mercy.mjs`                         | Menghubungkan server ke transport stdio                   |
-| `bin/mercy.mjs`                             | Entry point perintah `mercy`                              |
-| `bin/login.mjs`                             | Menjaga kompatibilitas `npm run login`                    |
-| `src/cli.mjs`                               | Menangani serve, login, status, dan konfigurasi harness   |
-| `src/login.mjs`                             | Menjalankan login browser manual dan fallback tautan      |
-| `src/browser.mjs`                           | Mendeteksi browser dan membuka URL sesuai sistem operasi  |
-| `src/harness.mjs`                           | Menghasilkan konfigurasi OpenCode, Claude Code, dan Codex |
-| `scripts/install.sh`, `scripts/install.ps1` | Installer POSIX dan Windows                               |
-| `src/server.mjs`                            | Mendaftarkan tool dan membentuk respons MCP               |
-| `src/schemas.mjs`                           | Memvalidasi parameter dan kombinasi argumen OAI           |
-| `src/catalog.mjs`                           | Membaca form, hasil pencarian, dan detail katalog         |
-| `src/repository.mjs`                        | Membaca metadata dan label dokumen EPrints                |
-| `src/oai.mjs`                               | Membaca XML OAI-PMH dan token batch                       |
-| `src/http.mjs`                              | Menangani HTTP, timeout, dan batas ukuran respons         |
-| `src/auth.mjs`                              | Memeriksa dan menyimpan state Portal lokal                |
-| `src/config.mjs`                            | Menyediakan endpoint dan konfigurasi sesi                 |
-| `src/html.mjs`                              | Menormalkan teks dan tautan hasil parser                  |
+| Lokasi                                      | Tanggung jawab                                                   |
+| ------------------------------------------- | ---------------------------------------------------------------- |
+| `bin/mcp-mercy.mjs`                         | Menghubungkan server ke transport stdio                          |
+| `bin/mercy.mjs`                             | Entry point perintah `mercy`                                     |
+| `bin/login.mjs`                             | Menjaga kompatibilitas `npm run login`                           |
+| `src/cli.mjs`                               | Menangani serve, login, status, dan konfigurasi harness          |
+| `src/login.mjs`                             | Menjalankan login browser manual dan fallback tautan             |
+| `src/browser.mjs`                           | Mendeteksi browser dan membuka URL sesuai sistem operasi         |
+| `src/harness.mjs`                           | Menghasilkan konfigurasi OpenCode, Claude Code, dan Codex        |
+| `src/pdf.mjs`, `src/pdf-worker.mjs`         | Memvalidasi unduhan PDF publik dan mengekstrak teks dalam worker |
+| `scripts/install.sh`, `scripts/install.ps1` | Installer POSIX dan Windows                                      |
+| `src/server.mjs`                            | Mendaftarkan tool dan membentuk respons MCP                      |
+| `src/schemas.mjs`                           | Memvalidasi parameter dan kombinasi argumen OAI                  |
+| `src/catalog.mjs`                           | Membaca form, hasil pencarian, dan detail katalog                |
+| `src/repository.mjs`                        | Membaca metadata dan label dokumen EPrints                       |
+| `src/oai.mjs`                               | Membaca XML OAI-PMH dan token batch                              |
+| `src/http.mjs`                              | Menangani HTTP, timeout, dan batas ukuran respons                |
+| `src/auth.mjs`                              | Memeriksa dan menyimpan state Portal lokal                       |
+| `src/config.mjs`                            | Menyediakan endpoint dan konfigurasi sesi                        |
+| `src/html.mjs`                              | Menormalkan teks dan tautan hasil parser                         |
 
 ## Perubahan kode
 
@@ -50,7 +51,7 @@ npm audit --audit-level=moderate
 npm pack --dry-run
 ```
 
-Jalankan `npm run test:live` jika mengubah struktur permintaan atau asumsi terhadap sumber kampus. Uji live tidak menggunakan akun dan tidak mengunduh PDF. Login browser interaktif perlu diperiksa manual bila alurnya berubah.
+Jalankan `npm run test:live` jika mengubah struktur permintaan atau asumsi terhadap sumber kampus. Uji live tidak menggunakan akun dan mengambil satu PDF publik untuk menguji pembacaan teks. Login browser interaktif perlu diperiksa manual bila alurnya berubah. Fixture PDF offline harus sintetis dan tidak memuat dokumen pengguna.
 
 Dependensi `minimatch` di-override ke versi 11.0.1 atau lebih baru untuk menutup [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) pada rantai tooling ESLint. Evaluasi kembali override setelah upstream memakai versi yang sudah ditambal.
 
