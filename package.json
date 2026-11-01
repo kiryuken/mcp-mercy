@@ -1,0 +1,68 @@
+{
+  "name": "mcp-mercy",
+  "version": "1.0.0",
+  "description": "MCP server for Digilib Mercu Buana catalog and UMB Repository",
+  "main": "src/server.mjs",
+  "files": [
+    "bin/",
+    "src/",
+    "scripts/",
+    "docs/",
+    "examples/",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"src/**/*.mjs\" --test-coverage-lines=95 --test-coverage-branches=85 --test-coverage-functions=95 test/*.test.mjs",
+    "test:live": "node --test --test-concurrency=1 test/live/*.test.mjs",
+    "start": "node bin/mcp-mercy.mjs",
+    "login": "node bin/login.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm test"
+  },
+  "keywords": [
+    "mcp",
+    "mercu-buana",
+    "library",
+    "eprints",
+    "oai-pmh"
+  ],
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiryuken/mcp-mercy.git"
+  },
+  "homepage": "https://github.com/kiryuken/mcp-mercy#readme",
+  "bugs": {
+    "url": "https://github.com/kiryuken/mcp-mercy/issues"
+  },
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "cheerio": "^1.2.0",
+    "fast-xml-parser": "^5.11.2",
+    "playwright-core": "^1.64.1",
+    "zod": "^4.6.7"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "bin": {
+    "mercy": "bin/mercy.mjs",
+    "mcp-mercy": "bin/mcp-mercy.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "prettier": "^3.9.10"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
+  }
+}

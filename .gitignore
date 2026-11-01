@@ -1,0 +1,66 @@
+# Dependencies and generated output
+node_modules/
+coverage/
+.nyc_output/
+*.log
+
+# Environment, credentials, and private keys
+.env
+.env.*
+!.env.example
+.npmrc
+.netrc
+.pypirc
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials.json
+client_secret*.json
+service-account*.json
+service_account*.json
+
+# Browser sessions, authentication state, and captured traffic
+.mercubuana-mcp/
+.mcp-mercy/
+.auth/
+playwright/.auth/
+portal-state*.json
+*-state.json
+auth-state*.json
+storage-state*.json
+storageState*.json
+storage_state*.json
+cookies*.json
+cookies*.txt
+*.har
+playwright-report/
+test-results/
+blob-report/
+traces/
+
+# Archives, backups, and temporary files may contain local session data
+*.tgz
+*.zip
+*.tar
+*.tar.gz
+*.bak
+*.tmp
+
+# Local agent, cloud, and editor configuration
+.codex/
+.agents/
+.aws/
+.ssh/
+.azure/
+.gcloud/
+.config/gcloud/
+.idea/
+.vscode/
+graphify-out/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
