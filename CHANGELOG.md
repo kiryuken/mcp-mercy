@@ -13,6 +13,10 @@
 - Versi source disiapkan menjadi `1.1.0`; rilis npm `1.0.0` tetap tersedia sampai pembaruan diterbitkan.
 - Metadata `repository_item` mengarahkan pembacaan file publik ke `pdf_read`.
 
+### Diperbaiki
+
+- Deteksi browser macOS memakai format path POSIX secara eksplisit agar pengujian lintas platform juga lulus pada runner Windows.
+
 ### Dokumentasi
 
 - Perbarui status distribusi dan panduan instalasi setelah `mcp-mercy@1.0.0` tersedia di npm.

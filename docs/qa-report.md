@@ -23,7 +23,13 @@ Source versi `1.1.0` menambahkan pembacaan PDF publik dengan pagination teks dan
 | `npm audit`                        | 0 critical, 0 high, 0 moderate, 0 low                                      |
 | Daftar file distribusi             | Entry point dan modul tersedia; state serta konfigurasi lokal dikecualikan |
 
-Coverage mengukur modul `src/`, termasuk CLI, login, deteksi browser, dan konfigurasi harness. GUI login menggunakan simulasi; keberhasilan login browser dengan akun kampus belum diuji. Konfigurasi CI untuk native macOS dan Windows tersedia, tetapi kedua OS tersebut belum dijalankan di lingkungan Linux ini.
+Coverage mengukur modul `src/`, termasuk CLI, login, deteksi browser, dan konfigurasi harness. GUI login menggunakan simulasi; keberhasilan login browser dengan akun kampus belum diuji. Hasil CI lintas OS dijelaskan di bawah.
+
+## Pemeriksaan CI Windows
+
+[Run CI untuk commit `6381e11`](https://github.com/kiryuken/mcp-mercy/actions/runs/41337877386) berhasil pada Linux dan macOS dengan Node.js 22 serta 24. Job Windows Node.js 24 gagal pada `npm run check`: tes kandidat browser macOS menghasilkan pemisah path Windows karena menggunakan `path.join`. Job Windows Node.js 22 dibatalkan oleh fail-fast; langkah pemeriksaannya juga tercatat gagal. Masalah yang sama muncul pada run commit awal dan sudah ada sebelum penambahan pembaca PDF.
+
+Perbaikan lokal menggunakan `path.posix.join` pada seluruh kandidat browser macOS. Tes yang gagal tetap dipertahankan sebagai regresi. Simulasi format path Windows pada modul browser mereproduksi kegagalan kode awal dan lulus setelah perbaikan. Delapan tes browser lulus pada Node.js 22; `npm run check` dan `npm run test:coverage` lulus pada Node.js 24 dengan 170 tes lulus serta satu tes Windows dilewati. Coverage tetap 99,92% baris, 94,09% branch, dan 97,78% fungsi. Verifikasi native Windows atas perbaikan ini menunggu run CI setelah perubahan dipush.
 
 ## Verifikasi instalasi dan harness
 
@@ -41,7 +47,7 @@ Ekstraksi diberi batas 20 MiB unduhan, 30 detik jaringan, 20 detik pemrosesan, d
 
 Suite live pertama memicu timeout 30 detik pada `repository_search`. Dua subtest yang memerlukan ID hasil pencarian dan test induk ikut gagal; tes PDF publik tetap lulus. Pemeriksaan ulang terarah kemudian berhasil untuk pencarian, detail repository, dan OAI `GetRecord`. Hasil awal tetap dicatat; suite live tidak dianggap lulus penuh pada percobaan pertama.
 
-Belum ada OCR atau rekonstruksi tabel/rumus. Nomor halaman mengikuti urutan fisik PDF. Pengujian native macOS/Windows masih bergantung pada CI GitHub.
+Belum ada OCR atau rekonstruksi tabel/rumus. Nomor halaman mengikuti urutan fisik PDF. Tes PDF lulus pada runner Linux, macOS, dan Windows di CI tersebut; validasi perbaikan path browser Windows menunggu run berikutnya.
 
 ## Penilaian internal
 

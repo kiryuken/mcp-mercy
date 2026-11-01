@@ -24,10 +24,14 @@ export function browserCandidates({
       candidates.push(path.win32.join(dir, "Microsoft", "Edge", "Application", "msedge.exe"));
     }
   } else if (platform === "darwin") {
-    for (const dir of ["/Applications", path.join(home, "Applications")]) {
-      candidates.push(path.join(dir, "Google Chrome.app", "Contents", "MacOS", "Google Chrome"));
-      candidates.push(path.join(dir, "Microsoft Edge.app", "Contents", "MacOS", "Microsoft Edge"));
-      candidates.push(path.join(dir, "Chromium.app", "Contents", "MacOS", "Chromium"));
+    for (const dir of ["/Applications", path.posix.join(home, "Applications")]) {
+      candidates.push(
+        path.posix.join(dir, "Google Chrome.app", "Contents", "MacOS", "Google Chrome"),
+      );
+      candidates.push(
+        path.posix.join(dir, "Microsoft Edge.app", "Contents", "MacOS", "Microsoft Edge"),
+      );
+      candidates.push(path.posix.join(dir, "Chromium.app", "Contents", "MacOS", "Chromium"));
     }
   } else {
     candidates.push(
